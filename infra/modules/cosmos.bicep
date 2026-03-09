@@ -38,39 +38,11 @@ resource cosmosAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' = {
   }
 }
 
-resource database 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2023-04-15' = {
-  parent: cosmosAccount
-  name: databaseName
-  properties: {
-    resource: {
-      id: databaseName
-    }
-  }
-}
-
-resource container 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/sqlContainers@2023-04-15' = {
-  parent: database
-  name: containerName
-  properties: {
-    resource: {
-      id: containerName
-      partitionKey: {
-        paths: ['/language']
-        kind: 'Hash'
-      }
-      indexingPolicy: {
-        indexingMode: 'consistent'
-        automatic: true
-        includedPaths: [
-          { path: '/*' }
-        ]
-        excludedPaths: [
-          { path: '/"_etag"/?' }
-        ]
-      }
-    }
-  }
-}
+// Database and container are created via CLI / seed script to work around
+// ARM management-plane routing issues with serverless Cosmos DB accounts.
+// They must exist before the first deployment:
+//   az cosmosdb sql database create ...
+//   az cosmosdb sql container create  ...
 
 output endpoint string = cosmosAccount.properties.documentEndpoint
 output accountName string = cosmosAccount.name
