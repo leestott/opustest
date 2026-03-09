@@ -373,15 +373,51 @@ button#verify-btn:disabled {
 }
 
 /* Report section */
+#report-section {
+    max-width: none;
+    margin-left: -1rem;
+    margin-right: -1rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
 #report-container {
     border: 1px solid #eee;
     border-radius: 4px;
     overflow: auto;
-    max-height: 80vh;
 }
 
 #report-container iframe {
     width: 100%;
     border: none;
     min-height: 600px;
+}
+
+.export-btn-row {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+
+.export-btn {
+    background-color: #0078d4;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.6rem 1.2rem;
+    font-size: 0.95rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: background-color 0.2s;
+}
+
+.export-btn:hover {
+    background-color: #005a9e;
+}
+
+.export-btn .icon {
+    font-size: 1.1rem;
 }

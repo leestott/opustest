@@ -261,6 +261,79 @@ function showReport(htmlContent) {
 
     // Smooth scroll to report
     section.scrollIntoView({ behavior: "smooth", block: "start" });
+
+    // Show export buttons
+    document.getElementById("export-btn-row").style.display = "flex";
+}
+
+function exportAsCopilotPrompt() {
+    var iframe = document.querySelector("#report-container iframe");
+    if (!iframe) return;
+    var iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+
+    var lines = [];
+    lines.push("# Code Verification Report — Improvement Prompts");
+    lines.push("");
+    lines.push("Use the errors below to improve the codebase. Each entry includes the file, error type, explanation, and a ready-to-use fix prompt.");
+    lines.push("");
+
+    // Extract scores from score cards or header
+    var scoreEls = iframeDoc.querySelectorAll("h1, h2, h3");
+    for (var s = 0; s < scoreEls.length; s++) {
+        var txt = scoreEls[s].textContent.trim();
+        if (txt.match(/score|total/i)) {
+            lines.push(txt);
+        }
+    }
+    lines.push("");
+
+    // Extract table rows
+    var tables = iframeDoc.querySelectorAll("table");
+    for (var t = 0; t < tables.length; t++) {
+        var rows = tables[t].querySelectorAll("tr");
+        var headers = [];
+        for (var r = 0; r < rows.length; r++) {
+            var cells = rows[r].querySelectorAll("th, td");
+            if (cells.length === 0) continue;
+
+            if (r === 0) {
+                // header row
+                for (var c = 0; c < cells.length; c++) {
+                    headers.push(cells[c].textContent.trim());
+                }
+            } else {
+                lines.push("---");
+                lines.push("");
+                for (var c2 = 0; c2 < cells.length; c2++) {
+                    var label = headers[c2] || "Column " + (c2 + 1);
+                    var value = cells[c2].textContent.trim();
+                    if (label.toLowerCase().includes("fix prompt")) {
+                        lines.push("### " + label);
+                        lines.push("");
+                        lines.push("```");
+                        lines.push(value);
+                        lines.push("```");
+                    } else {
+                        lines.push("**" + label + ":** " + value);
+                    }
+                }
+                lines.push("");
+            }
+        }
+    }
+
+    var text = lines.join("\n");
+
+    // Download as .md file
+    var blob = new Blob([text], { type: "text/markdown;charset=utf-8" });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = "verification-report-copilot-prompt.md";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
 }
 
 function showError(message) {
