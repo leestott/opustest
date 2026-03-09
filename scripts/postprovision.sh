@@ -16,18 +16,5 @@ if [ -z "$COSMOS_KEY" ]; then
 fi
 export COSMOS_KEY
 
-echo "Ensuring Cosmos DB database and container exist..."
-az cosmosdb sql database create \
-    --account-name "$COSMOS_ACCOUNT_NAME" \
-    --resource-group "$AZURE_RESOURCE_GROUP" \
-    --name "$COSMOS_DATABASE_NAME" 2>/dev/null || true
-
-az cosmosdb sql container create \
-    --account-name "$COSMOS_ACCOUNT_NAME" \
-    --resource-group "$AZURE_RESOURCE_GROUP" \
-    --database-name "$COSMOS_DATABASE_NAME" \
-    --name "$COSMOS_CONTAINER_NAME" \
-    --partition-key-path "/language" 2>/dev/null || true
-
-echo "Seeding Cosmos DB..."
+echo "Seeding Cosmos DB (creates database/container if needed)..."
 python scripts/seed_cosmos.py
