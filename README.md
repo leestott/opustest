@@ -1,4 +1,4 @@
-# Opustes — AI-Powered Python Code Verification
+# Opustest — AI-Powered Python Code Verification
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue?logo=python&logoColor=white)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
