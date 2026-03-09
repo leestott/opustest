@@ -39,5 +39,18 @@ Thumbs.db
 # Docker
 docker-compose.override.yml
 
+# Node
+node_modules/
+package-lock.json
+
+# Playwright
+.playwright-mcp/
+playwright-report/
+test-results/
+
+# Videos
+screenshots/*.webm
+screenshots/*.mp4
+
 # Logs
 *.log

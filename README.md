@@ -41,6 +41,34 @@ The generated HTML report contains:
 
 ---
 
+## Screenshots
+
+### Landing page — Git URL mode (default)
+![Landing page](screenshots/01-landing-page.png)
+
+### Local Path mode
+![Local Path mode](screenshots/02-local-path-mode.png)
+
+### Repository URL entered
+![URL entered](screenshots/03-url-entered.png)
+
+### Stage 1 — Code example retrieval (RAG)
+![Stage 1 retrieval](screenshots/04-stage1-retrieval.png)
+
+### Stage 3 — Verification agents running
+![Stage 3 verification](screenshots/05-stage3-verification.png)
+
+### Stage 4 — Report generation
+![Stage 4 report generation](screenshots/06-stage4-report-generation.png)
+
+### Verification complete
+![Verification complete](screenshots/07-verification-complete.png)
+
+### Report detail — scores and error table
+![Report detail](screenshots/08-report-detail.png)
+
+---
+
 ## Architecture
 
 The system uses these agents, orchestrated sequentially:
@@ -352,6 +380,24 @@ docker tag code-verification:latest <ACR_LOGIN_SERVER>/code-verification:latest
 docker push <ACR_LOGIN_SERVER>/code-verification:latest
 az containerapp update --name <APP_NAME> --resource-group <RG_NAME> --image <ACR_LOGIN_SERVER>/code-verification:latest
 ```
+
+#### Using the deployed app
+
+Once deployed, open the application URL printed by `azd` (e.g. `https://ca-xxxxx.azurecontainerapps.io`).
+
+The app defaults to **Git URL mode** — paste any public HTTPS repository URL and click **Verify Codebase**:
+
+```
+https://github.com/user/repo
+https://github.com/user/repo.git
+https://dev.azure.com/org/project/_git/repo
+```
+
+The server clones the repository into a temporary directory (shallow clone, depth 1, 120 s timeout), runs all verification agents against the Python files, and streams progress back to your browser via Server-Sent Events. The cloned directory is cleaned up automatically after the report is generated.
+
+> **Note:** Only **HTTPS** Git URLs are accepted. SSH URLs (`git@github.com:…`) and `file://` URLs are rejected for security. Private repositories are supported only if the server's environment has Git credentials configured (e.g. via a Git credential helper).
+
+You can also switch to **Local directory mode** using the toggle in the UI, which is useful when running locally but is not available for cloud-deployed instances (the container does not have access to your local filesystem).
 
 #### Local Docker run (without full Azure deploy)
 
