@@ -1,0 +1,7 @@
+{
+  "resourceGroup": "rg-",
+  "cosmosAccount": "cosmos-",
+  "acr": "acr",
+  "containerAppsEnv": "cae-",
+  "containerApp": "ca-"
+}

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Verification System</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Code Verification System</h1>
+            <p class="subtitle">Analyze your Python codebase against coding standards</p>
+        </header>
+
+        <main>
+            <section id="input-section" class="card">
+                <h2>Select Codebase Directory</h2>
+                <div class="input-group">
+                    <label for="directory-path">Directory Path</label>
+                    <input
+                        type="text"
+                        id="directory-path"
+                        placeholder="Enter the absolute path to your Python codebase"
+                        autocomplete="off"
+                    >
+                </div>
+                <button id="verify-btn" onclick="startVerification()">
+                    Verify Codebase
+                </button>
+            </section>
+
+            <section id="progress-section" class="card hidden">
+                <h2>Verification Progress</h2>
+                <div id="progress-container">
+                    <div class="progress-stage" id="stage-retrieval">
+                        <span class="stage-icon">&#9711;</span>
+                        <div class="stage-info">
+                            <span class="stage-label">Code Example Retrieval</span>
+                            <span class="stage-message" id="msg-retrieval"></span>
+                        </div>
+                    </div>
+                    <div class="progress-stage" id="stage-import">
+                        <span class="stage-icon">&#9711;</span>
+                        <div class="stage-info">
+                            <span class="stage-label">Codebase Import</span>
+                            <span class="stage-message" id="msg-import"></span>
+                        </div>
+                    </div>
+                    <div class="progress-stage" id="stage-verification">
+                        <span class="stage-icon">&#9711;</span>
+                        <div class="stage-info">
+                            <span class="stage-label">Code Verification</span>
+                            <span class="stage-message" id="msg-verification"></span>
+                        </div>
+                    </div>
+                    <div class="progress-stage" id="stage-report">
+                        <span class="stage-icon">&#9711;</span>
+                        <div class="stage-info">
+                            <span class="stage-label">Report Generation</span>
+                            <span class="stage-message" id="msg-report"></span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="error-section" class="card hidden">
+                <h2>Error</h2>
+                <p id="error-message" class="error-text"></p>
+            </section>
+
+            <section id="report-section" class="card hidden">
+                <h2>Verification Report</h2>
+                <div id="report-container"></div>
+            </section>
+        </main>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>

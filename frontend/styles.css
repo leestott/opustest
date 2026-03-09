@@ -1,0 +1,164 @@
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+        Ubuntu, Cantarell, sans-serif;
+    background-color: #f0f2f5;
+    color: #1a1a2e;
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+header h1 {
+    font-size: 2rem;
+    color: #0078d4;
+}
+
+header .subtitle {
+    color: #666;
+    margin-top: 0.25rem;
+}
+
+.card {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.card h2 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Input section */
+.input-group {
+    margin-bottom: 1rem;
+}
+
+.input-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: #0078d4;
+    box-shadow: 0 0 0 2px rgba(0, 120, 212, 0.2);
+}
+
+button#verify-btn {
+    background-color: #0078d4;
+    color: #fff;
+    border: none;
+    padding: 0.7rem 2rem;
+    font-size: 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+button#verify-btn:hover {
+    background-color: #005a9e;
+}
+
+button#verify-btn:disabled {
+    background-color: #999;
+    cursor: not-allowed;
+}
+
+/* Progress section */
+.progress-stage {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid #eee;
+}
+
+.progress-stage:last-child {
+    border-bottom: none;
+}
+
+.stage-icon {
+    font-size: 1.2rem;
+    line-height: 1.4;
+    min-width: 1.4rem;
+    text-align: center;
+}
+
+.stage-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.stage-label {
+    font-weight: 600;
+}
+
+.stage-message {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.progress-stage.active .stage-icon {
+    color: #0078d4;
+}
+
+.progress-stage.completed .stage-icon {
+    color: #28a745;
+}
+
+.progress-stage.error .stage-icon {
+    color: #dc3545;
+}
+
+/* Error section */
+.error-text {
+    color: #dc3545;
+    font-weight: 500;
+}
+
+/* Report section */
+#report-container {
+    border: 1px solid #eee;
+    border-radius: 4px;
+    overflow: auto;
+    max-height: 80vh;
+}
+
+#report-container iframe {
+    width: 100%;
+    border: none;
+    min-height: 600px;
+}
