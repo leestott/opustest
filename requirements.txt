@@ -1,3 +1,5 @@
+# Install with: pip install --pre -r requirements.txt
+# The --pre flag is required while agent-framework is in preview.
 agent-framework[azure]>=1.0.0rc3
 agent-framework-orchestrations>=1.0.0b260304
 azure-cosmos>=4.9.0
