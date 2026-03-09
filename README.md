@@ -1,4 +1,4 @@
-# PyCodeLens — AI-Powered Python Code Verification
+# Opustes — AI-Powered Python Code Verification
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue?logo=python&logoColor=white)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
@@ -9,13 +9,13 @@
 
 ---
 
-## What is PyCodeLens?
+## What is opustest?
 
-PyCodeLens is an **agentic AI system** that automatically analyzes Python codebases and produces a detailed quality report. It uses multiple specialized AI agents — built with [Microsoft Agent Framework](https://github.com/microsoft/agent-framework) — that collaborate in a pipeline to score your code across four areas and flag every issue found.
+opustest is an **agentic AI system** that automatically analyzes Python codebases and produces a detailed quality report. It uses multiple specialized AI agents — built with [Microsoft Agent Framework](https://github.com/microsoft/agent-framework) — that collaborate in a pipeline to score your code across four areas and flag every issue found.
 
 The system uses **Retrieval-Augmented Generation (RAG)**: before analyzing your code, it retrieves curated examples of good and bad Python code from an **Azure Cosmos DB** database, and uses those examples as the quality standards for its review.
 
-You interact with PyCodeLens through a **web-based UI** where you enter a directory path, watch real-time progress updates, and receive a downloadable HTML report.
+You interact with opustest through a **web-based UI** where you enter a directory path, watch real-time progress updates, and receive a downloadable HTML report.
 
 ### Who is this for?
 
@@ -128,7 +128,7 @@ flowchart TD
 ### Project structure
 
 ```
-PyCodeLens/
+opustest/
 ├── backend/
 │   ├── agents/
 │   │   ├── code_example_retrieval.py   # RAG retrieval from Cosmos DB
@@ -182,7 +182,7 @@ Each document in the code examples container has:
 
 ## Getting Started
 
-There are two ways to run PyCodeLens: **locally** (for development) or **deployed to Azure Container Apps** (for production). Both paths are covered below.
+There are two ways to run opustest: **locally** (for development) or **deployed to Azure Container Apps** (for production). Both paths are covered below.
 
 ### Prerequisites
 
@@ -203,13 +203,13 @@ You will also need:
 
 ### Option A: Run Locally
 
-Follow these steps to run PyCodeLens on your machine.
+Follow these steps to run opustest on your machine.
 
 **Step 1 — Clone and configure environment variables**
 
 ```bash
 git clone <your-repo-url>
-cd PyCodeLens
+cd opustest
 cp .env.example .env
 ```
 
