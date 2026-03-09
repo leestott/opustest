@@ -19,7 +19,7 @@ param cosmosContainerName string = 'examples'
 param azureAiProjectEndpoint string = ''
 
 @description('Azure OpenAI model deployment name.')
-param azureAiModelDeploymentName string = 'gpt-4.1'
+param azureAiModelDeploymentName string = 'gpt-5.2'
 
 @description('Full resource ID of the Azure AI / Cognitive Services account for RBAC. Leave empty to skip role assignment.')
 param azureAiResourceId string = ''
