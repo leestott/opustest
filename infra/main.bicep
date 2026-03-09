@@ -59,18 +59,6 @@ module acr 'modules/acr.bicep' = {
   }
 }
 
-// Retrieve ACR credentials for Container App registry pull
-resource acrRef 'Microsoft.ContainerRegistry/registries@2023-07-01' existing = {
-  name: acr.outputs.registryName
-  scope: rg
-}
-
-// Retrieve Cosmos DB key for Container App secrets
-resource cosmosRef 'Microsoft.DocumentDB/databaseAccounts@2024-05-15' existing = {
-  name: cosmos.outputs.accountName
-  scope: rg
-}
-
 // Container Apps hosting
 module app 'modules/container-app.bicep' = {
   name: 'container-app'
@@ -82,12 +70,12 @@ module app 'modules/container-app.bicep' = {
     tags: tags
     acrLoginServer: acr.outputs.loginServer
     imageName: imageName
-    acrUsername: acrRef.listCredentials().username
-    acrPassword: acrRef.listCredentials().passwords[0].value
+    acrUsername: acr.outputs.adminUsername
+    acrPassword: acr.outputs.adminPassword
     azureAiProjectEndpoint: azureAiProjectEndpoint
     azureAiModelDeploymentName: azureAiModelDeploymentName
     cosmosEndpoint: cosmos.outputs.endpoint
-    cosmosKey: cosmosRef.listKeys().primaryMasterKey
+    cosmosKey: cosmos.outputs.primaryKey
     cosmosDatabaseName: cosmosDatabaseName
     cosmosContainerName: cosmosContainerName
   }

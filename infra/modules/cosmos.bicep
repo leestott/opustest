@@ -74,3 +74,6 @@ resource container 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/sqlContai
 
 output endpoint string = cosmosAccount.properties.documentEndpoint
 output accountName string = cosmosAccount.name
+
+@description('Primary master key for Cosmos DB.')
+output primaryKey string = cosmosAccount.listKeys().primaryMasterKey
