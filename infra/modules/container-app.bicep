@@ -77,6 +77,9 @@ resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
   name: appName
   location: location
   tags: union(tags, { 'azd-service-name': 'web' })
+  identity: {
+    type: 'SystemAssigned'
+  }
   properties: {
     managedEnvironmentId: containerAppsEnv.id
     configuration: {
@@ -143,3 +146,4 @@ resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
 
 output fqdn string = containerApp.properties.configuration.ingress.fqdn
 output appName string = containerApp.name
+output principalId string = containerApp.identity.principalId

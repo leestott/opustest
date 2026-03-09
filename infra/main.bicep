@@ -19,7 +19,10 @@ param cosmosContainerName string = 'examples'
 param azureAiProjectEndpoint string = ''
 
 @description('Azure OpenAI model deployment name.')
-param azureAiModelDeploymentName string = 'gpt-4o'
+param azureAiModelDeploymentName string = 'gpt-4.1'
+
+@description('Full resource ID of the Azure AI / Cognitive Services account for RBAC. Leave empty to skip role assignment.')
+param azureAiResourceId string = ''
 
 @description('Docker image name with tag to deploy.')
 param imageName string = 'code-verification:latest'
@@ -90,4 +93,5 @@ output ACR_LOGIN_SERVER string = acr.outputs.loginServer
 output ACR_NAME string = acr.outputs.registryName
 output APP_FQDN string = app.outputs.fqdn
 output APP_NAME string = app.outputs.appName
+output APP_PRINCIPAL_ID string = app.outputs.principalId
 output AZURE_RESOURCE_GROUP string = rg.name

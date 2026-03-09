@@ -15,7 +15,7 @@ opustest is an **agentic AI system** that automatically analyzes Python codebase
 
 The system uses **Retrieval-Augmented Generation (RAG)**: before analyzing your code, it retrieves curated examples of good and bad Python code from an **Azure Cosmos DB** database, and uses those examples as the quality standards for its review.
 
-You interact with opustest through a **web-based UI** where you enter either a **Git repository URL** (for cloud-hosted deployments) or a **local directory path** (for local runs), watch real-time progress updates, and receive a downloadable HTML report.
+You interact with opustest through a **web-based UI** where you enter a **directory path** to a Python codebase, watch real-time progress updates, and receive an HTML report.
 
 ### Who is this for?
 
@@ -61,12 +61,11 @@ An **Orchestrator** coordinates the pipeline and streams progress updates to the
 ```mermaid
 flowchart TD
     subgraph UI["🌐 Web UI (Browser)"]
-        A["Enter Git URL or\nlocal path & click Verify"]
+        A["Enter directory path\n& click Verify"]
     end
 
     subgraph Server["⚡ FastAPI Backend"]
         B["POST /api/verify\nSSE progress stream"]
-        B2["Clone repo\n(if Git URL)"]
     end
 
     subgraph Orchestrator["🎯 Orchestrator Agent"]
@@ -97,10 +96,8 @@ flowchart TD
 
     M["📄 HTML Report\n(scores + error table)"]
 
-    A -->|"Git URL or path"| B
-    B -->|"clone if URL"| B2
-    B2 -->|"start pipeline"| C
-    B -->|"start pipeline\n(local path)"| C
+    A -->|"directory path"| B
+    B -->|"start pipeline"| C
     C --> D
     D <-->|"query Python examples"| E
     C --> F
@@ -120,14 +117,13 @@ flowchart TD
     style Stage4 fill:#e0f2f1,stroke:#00695c,color:#000
 ```
 
-1. You enter a **Git repository URL** or a **local directory path** in the **Web UI** and click "Verify Codebase"
-2. If a Git URL was provided, the server **clones the repository** into a temporary directory
-3. The **Orchestrator** starts the pipeline and streams progress back via Server-Sent Events
-4. The **Code Example Retrieval Agent** queries Cosmos DB for Python examples (good and bad)
-5. The **Codebase Import Agent** reads all `.py` files from the cloned repo / local directory
-6. Four **Verification Agents** each score one area (0–5) and list issues found
-7. The **Report Generation Agent** compiles everything into an HTML report
-8. The report is displayed in the Web UI (cloned repos are automatically cleaned up)
+1. You enter a **directory path** to a Python codebase in the **Web UI** and click **Verify Codebase**
+2. The **Orchestrator** starts the pipeline and streams progress back to the browser via Server-Sent Events (SSE)
+3. The **Code Example Retrieval Agent** queries Cosmos DB for Python examples (good and bad)
+4. The **Codebase Import Agent** reads all `.py` files from the directory
+5. Four **Verification Agents** each score one area (0–5) and list issues found
+6. The **Report Generation Agent** compiles everything into an HTML report
+7. The report is displayed in the Web UI
 
 ### Project structure
 
@@ -162,6 +158,8 @@ opustest/
 ├── scripts/
 │   ├── deploy.ps1                      # One-command deploy (PowerShell)
 │   ├── deploy.sh                       # One-command deploy (Bash)
+│   ├── postprovision.ps1               # azd hook: seeds Cosmos DB after provision (Windows)
+│   ├── postprovision.sh                # azd hook: seeds Cosmos DB after provision (Linux/macOS)
 │   └── seed_cosmos.py                  # Populate sample code examples
 ├── azure.yaml                          # azd project definition
 ├── Dockerfile                          # Container image definition
@@ -271,10 +269,12 @@ Now populate the database with sample good/bad Python code examples:
 python scripts/seed_cosmos.py
 ```
 
-The script creates 20 sample documents:
-- **Good examples** (8): PEP 8 naming, type hints, specific exception handling, context managers, input validation, defensive programming with logging
-- **Bad examples** (9): bare except, poor naming, missing error handling, SQL injection, mutable defaults, swallowed exceptions, inconsistent return types
-- **Non-Python examples** (2): JavaScript and Java entries that the RAG filter correctly ignores
+The script creates 19 sample documents:
+- **Good Python examples** (8): PEP 8 naming, type hints, specific exception handling, context managers, input validation, defensive programming with logging
+- **Bad Python examples** (9): bare except, poor naming, missing error handling, SQL injection, mutable defaults, swallowed exceptions, inconsistent return types
+- **Non-Python examples** (2): one JavaScript and one Java entry that the RAG filter correctly ignores
+
+> **Tip:** When you deploy to Azure with `azd up`, the seed script runs automatically via the `postprovision` hook — you don't need to run it manually.
 
 **Step 4 — Start the server**
 
@@ -286,8 +286,7 @@ uvicorn backend.app:app --reload
 
 Open [http://localhost:8000](http://localhost:8000) in your browser.
 
-- **Local Path mode** (default when running locally): Click the **Local Path** tab, enter the absolute path to a Python codebase directory, and click **Verify Codebase**.
-- **Git URL mode**: Click the **Git URL** tab, enter an HTTPS Git repository URL (e.g. `https://github.com/user/repo`), and click **Verify Codebase**. The server will clone the repo into a temporary directory, run the analysis, and clean up when done.
+Enter the absolute path to a Python codebase directory (e.g. `C:\Users\you\my-project` or `/home/you/my-project`) and click **Verify Codebase**.
 
 You will see real-time progress updates for each stage, and the final HTML report will be displayed when complete.
 
@@ -295,7 +294,27 @@ You will see real-time progress updates for each stage, and the final HTML repor
 
 ### Option B: Deploy to Azure Container Apps
 
-A single deployment script provisions **all** Azure resources (Cosmos DB, Container Registry, Container Apps), builds and pushes the Docker image, and seeds sample data.
+The recommended way to deploy is with `azd up`, which provisions all Azure resources, builds the Docker image, pushes it to ACR, deploys to Container Apps, and **automatically seeds Cosmos DB** with sample data via the `postprovision` hook.
+
+#### Quick deploy with azd
+
+```bash
+# Log in to Azure
+az login
+azd auth login
+
+# Set required environment variables
+azd init
+azd env set AZURE_AI_PROJECT_ENDPOINT "https://<your-project>.openai.azure.com/"
+azd env set AZURE_AI_MODEL_DEPLOYMENT_NAME "gpt-4o"
+
+# Provision, build, and deploy (seeds Cosmos DB automatically)
+azd up
+```
+
+After deployment completes, `azd` prints the application URL.
+
+Alternatively, you can use the one-command deploy scripts:
 
 #### One-command deploy (PowerShell)
 

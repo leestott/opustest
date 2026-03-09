@@ -44,18 +44,31 @@
                     >
                     <span class="input-hint">Only works when running locally — the path must exist on the server</span>
                 </div>
-                <button id="verify-btn" onclick="startVerification()">
-                    Verify Codebase
-                </button>
+                <div class="btn-row">
+                    <button id="verify-btn" onclick="startVerification()">
+                        <span id="verify-btn-text">Verify Codebase</span>
+                        <span id="verify-btn-spinner" class="btn-spinner hidden"></span>
+                    </button>
+                    <button id="cancel-btn" class="hidden" onclick="cancelVerification()">
+                        Cancel
+                    </button>
+                </div>
             </section>
 
             <section id="progress-section" class="card hidden">
-                <h2>Verification Progress</h2>
+                <div class="progress-header">
+                    <h2>Verification Progress</h2>
+                    <span id="elapsed-timer" class="elapsed-timer">0:00</span>
+                </div>
+                <div class="progress-bar-track">
+                    <div id="progress-bar-fill" class="progress-bar-fill" style="width: 0%"></div>
+                </div>
                 <div id="progress-container">
                     <div class="progress-stage" id="stage-retrieval">
                         <span class="stage-icon">&#9711;</span>
                         <div class="stage-info">
                             <span class="stage-label">Code Example Retrieval</span>
+                            <span class="stage-desc">Fetching reference examples from Cosmos DB</span>
                             <span class="stage-message" id="msg-retrieval"></span>
                         </div>
                     </div>
@@ -63,6 +76,7 @@
                         <span class="stage-icon">&#9711;</span>
                         <div class="stage-info">
                             <span class="stage-label">Codebase Import</span>
+                            <span class="stage-desc">Cloning repo and scanning Python files</span>
                             <span class="stage-message" id="msg-import"></span>
                         </div>
                     </div>
@@ -70,6 +84,7 @@
                         <span class="stage-icon">&#9711;</span>
                         <div class="stage-info">
                             <span class="stage-label">Code Verification</span>
+                            <span class="stage-desc">Analyzing quality, correctness &amp; error handling</span>
                             <span class="stage-message" id="msg-verification"></span>
                         </div>
                     </div>
@@ -77,15 +92,30 @@
                         <span class="stage-icon">&#9711;</span>
                         <div class="stage-info">
                             <span class="stage-label">Report Generation</span>
+                            <span class="stage-desc">Compiling results into a detailed HTML report</span>
                             <span class="stage-message" id="msg-report"></span>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <section id="error-section" class="card hidden">
-                <h2>Error</h2>
+            <section id="error-section" class="card error-card hidden">
+                <div class="error-header">
+                    <span class="error-icon">&#9888;</span>
+                    <h2>Verification Failed</h2>
+                </div>
                 <p id="error-message" class="error-text"></p>
+                <button class="retry-btn" onclick="retryVerification()">Retry</button>
+            </section>
+
+            <section id="success-banner" class="card success-card hidden">
+                <div class="success-header">
+                    <span class="success-icon">&#10004;</span>
+                    <div>
+                        <h2>Verification Complete</h2>
+                        <p id="success-summary" class="success-summary"></p>
+                    </div>
+                </div>
             </section>
 
             <section id="report-section" class="card hidden">

@@ -119,6 +119,9 @@ button#verify-btn {
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 button#verify-btn:hover {
@@ -126,17 +129,98 @@ button#verify-btn:hover {
 }
 
 button#verify-btn:disabled {
-    background-color: #999;
+    background-color: #5ba3d9;
     cursor: not-allowed;
 }
 
+.btn-row {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.btn-spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+}
+
+#cancel-btn {
+    background: none;
+    border: 1px solid #dc3545;
+    color: #dc3545;
+    padding: 0.7rem 1.5rem;
+    font-size: 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+#cancel-btn:hover {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+.input-error {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.25) !important;
+    animation: shake 0.4s ease-in-out;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-4px); }
+    40%, 80% { transform: translateX(4px); }
+}
+
 /* Progress section */
+.progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.progress-header h2 {
+    margin-bottom: 0;
+}
+
+.elapsed-timer {
+    font-family: "Cascadia Code", "Fira Code", monospace;
+    font-size: 1rem;
+    color: #0078d4;
+    font-weight: 600;
+    background: #e8f4fd;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+}
+
+.progress-bar-track {
+    height: 4px;
+    background: #e9ecef;
+    border-radius: 2px;
+    margin-bottom: 1rem;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #0078d4, #28a745);
+    border-radius: 2px;
+    transition: width 0.6s ease;
+}
+
 .progress-stage {
     display: flex;
     align-items: flex-start;
     gap: 0.75rem;
     padding: 0.6rem 0;
     border-bottom: 1px solid #eee;
+    transition: background-color 0.3s;
 }
 
 .progress-stage:last-child {
@@ -148,6 +232,7 @@ button#verify-btn:disabled {
     line-height: 1.4;
     min-width: 1.4rem;
     text-align: center;
+    transition: color 0.3s;
 }
 
 .stage-info {
@@ -159,27 +244,132 @@ button#verify-btn:disabled {
     font-weight: 600;
 }
 
+.stage-desc {
+    color: #999;
+    font-size: 0.8rem;
+    margin-top: 0.1rem;
+}
+
 .stage-message {
     color: #666;
     font-size: 0.9rem;
+    margin-top: 0.15rem;
+}
+
+.progress-stage.active {
+    background-color: #f0f7ff;
+    border-radius: 6px;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
 }
 
 .progress-stage.active .stage-icon {
     color: #0078d4;
+    animation: pulse 1.2s ease-in-out infinite;
+}
+
+.progress-stage.active .stage-message {
+    color: #0078d4;
+    font-weight: 500;
 }
 
 .progress-stage.completed .stage-icon {
     color: #28a745;
 }
 
+.progress-stage.completed .stage-label {
+    color: #555;
+}
+
 .progress-stage.error .stage-icon {
     color: #dc3545;
 }
 
-/* Error section */
-.error-text {
+.progress-stage.error .stage-label {
     color: #dc3545;
-    font-weight: 500;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.15); }
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Error section */
+.error-card {
+    border-left: 4px solid #dc3545;
+    background: #fff5f5;
+}
+
+.error-header {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.75rem;
+}
+
+.error-header h2 {
+    margin-bottom: 0;
+    color: #dc3545;
+}
+
+.error-icon {
+    font-size: 1.5rem;
+    color: #dc3545;
+}
+
+.error-text {
+    color: #721c24;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    word-break: break-word;
+}
+
+.retry-btn {
+    margin-top: 1rem;
+    background-color: #0078d4;
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1.5rem;
+    font-size: 0.95rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.retry-btn:hover {
+    background-color: #005a9e;
+}
+
+/* Success section */
+.success-card {
+    border-left: 4px solid #28a745;
+    background: #f0fff4;
+}
+
+.success-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.success-header h2 {
+    margin-bottom: 0;
+    color: #28a745;
+}
+
+.success-icon {
+    font-size: 1.8rem;
+    color: #28a745;
+}
+
+.success-summary {
+    color: #555;
+    font-size: 0.9rem;
+    margin-top: 0.2rem;
 }
 
 /* Report section */
