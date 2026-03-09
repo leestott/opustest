@@ -229,8 +229,10 @@ COSMOS_CONTAINER_NAME=examples
 **Step 2 — Install Python dependencies**
 
 ```bash
-pip install -r requirements.txt
+pip install --pre -r requirements.txt
 ```
+
+> The `--pre` flag is required because Microsoft Agent Framework is currently in preview.
 
 **Step 3 — Provision Cosmos DB and seed sample data**
 
