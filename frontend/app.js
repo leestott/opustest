@@ -3,12 +3,32 @@
 const STAGE_ORDER = ["retrieval", "import", "verification", "report"];
 const STAGE_ICONS = { pending: "\u25CB", active: "\u25D4", completed: "\u2714", error: "\u2716" };
 
+var currentInputMode = "git";
+
+function setInputMode(mode) {
+    currentInputMode = mode;
+    document.getElementById("git-input-group").classList.toggle("hidden", mode !== "git");
+    document.getElementById("local-input-group").classList.toggle("hidden", mode !== "local");
+    document.getElementById("mode-git").classList.toggle("active", mode === "git");
+    document.getElementById("mode-local").classList.toggle("active", mode === "local");
+}
+
 function startVerification() {
-    const dirInput = document.getElementById("directory-path");
-    const directoryPath = dirInput.value.trim();
-    if (!directoryPath) {
-        alert("Please enter a directory path.");
-        return;
+    var payload;
+    if (currentInputMode === "git") {
+        var gitUrl = document.getElementById("git-url").value.trim();
+        if (!gitUrl) {
+            alert("Please enter a Git repository URL.");
+            return;
+        }
+        payload = { git_url: gitUrl };
+    } else {
+        var directoryPath = document.getElementById("directory-path").value.trim();
+        if (!directoryPath) {
+            alert("Please enter a directory path.");
+            return;
+        }
+        payload = { directory_path: directoryPath };
     }
 
     // Reset UI
@@ -19,7 +39,7 @@ function startVerification() {
     document.getElementById("verify-btn").disabled = true;
 
     // Start SSE via fetch (POST with body — EventSource only supports GET)
-    fetchSSE(directoryPath);
+    fetchSSE(payload);
 }
 
 function resetProgressUI() {
@@ -39,12 +59,12 @@ function updateStage(stage, message, status) {
     document.getElementById("msg-" + stage).textContent = message;
 }
 
-async function fetchSSE(directoryPath) {
+async function fetchSSE(payload) {
     try {
         var response = await fetch("/api/verify", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ directory_path: directoryPath }),
+            body: JSON.stringify(payload),
         });
 
         var reader = response.body.getReader();

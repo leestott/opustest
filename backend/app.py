@@ -4,6 +4,7 @@ Provides:
 - Static file serving for the web UI
 - POST /api/verify endpoint to start verification (returns SSE stream)
 - Progress updates streamed to the UI via Server-Sent Events
+- Accepts either a local directory path or a Git HTTPS URL
 """
 
 import asyncio
@@ -16,6 +17,7 @@ from fastapi.responses import HTMLResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 
 from backend.agents.orchestrator import run_verification_pipeline
+from backend.git_utils import is_git_url, clone_repo, cleanup_clone
 
 app = FastAPI(title="Code Verification System")
 
@@ -43,19 +45,38 @@ async def serve_ui():
 async def verify_codebase(request: Request):
     """Start the code verification pipeline.
 
-    Expects JSON body: {"directory_path": "/absolute/path/to/codebase"}
+    Expects JSON body with one of:
+      {"directory_path": "/absolute/path/to/codebase"}
+      {"git_url": "https://github.com/user/repo"}
     Returns a Server-Sent Events stream with progress updates and the final report.
     """
     body = await request.json()
     directory_path: str = body.get("directory_path", "")
+    git_url: str = body.get("git_url", "")
 
-    if not directory_path:
+    if not directory_path and not git_url:
         return StreamingResponse(
-            _error_stream("directory_path is required"),
+            _error_stream("Provide either directory_path or git_url"),
             media_type="text/event-stream",
         )
 
-    # Validate the path exists, is a directory, and is absolute
+    # --- Git URL mode: clone into a temp directory ---
+    if git_url:
+        if not is_git_url(git_url):
+            return StreamingResponse(
+                _error_stream(
+                    "Invalid Git URL. Only HTTPS URLs are supported "
+                    "(e.g. https://github.com/user/repo)"
+                ),
+                media_type="text/event-stream",
+            )
+        return StreamingResponse(
+            _git_verification_stream(git_url),
+            media_type="text/event-stream",
+            headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+        )
+
+    # --- Local directory mode ---
     if not os.path.isabs(directory_path):
         return StreamingResponse(
             _error_stream("directory_path must be an absolute path"),
@@ -82,6 +103,24 @@ async def verify_codebase(request: Request):
 async def _error_stream(message: str):
     data = json.dumps({"type": "error", "message": message})
     yield f"data: {data}\n\n"
+
+
+async def _git_verification_stream(git_url: str):
+    """Clone a Git repo, run verification, then clean up."""
+    clone_dir: str | None = None
+    try:
+        clone_dir = await asyncio.to_thread(clone_repo, git_url)
+    except (ValueError, RuntimeError) as exc:
+        data = json.dumps({"type": "error", "message": str(exc)})
+        yield f"data: {data}\n\n"
+        return
+
+    try:
+        async for chunk in _verification_stream(clone_dir):
+            yield chunk
+    finally:
+        if clone_dir:
+            await asyncio.to_thread(cleanup_clone, clone_dir)
 
 
 async def _verification_stream(directory_path: str):

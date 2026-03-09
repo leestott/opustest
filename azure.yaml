@@ -6,6 +6,14 @@ infra:
   provider: bicep
   path: infra
   module: main
+hooks:
+  postprovision:
+    windows:
+      shell: pwsh
+      run: scripts/postprovision.ps1
+    posix:
+      shell: sh
+      run: scripts/postprovision.sh
 services:
   web:
     project: .

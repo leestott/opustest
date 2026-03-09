@@ -15,8 +15,26 @@
 
         <main>
             <section id="input-section" class="card">
-                <h2>Select Codebase Directory</h2>
-                <div class="input-group">
+                <h2>Select Codebase Source</h2>
+                <div class="input-mode-toggle">
+                    <button type="button" class="mode-btn active" id="mode-git" onclick="setInputMode('git')">
+                        Git URL
+                    </button>
+                    <button type="button" class="mode-btn" id="mode-local" onclick="setInputMode('local')">
+                        Local Path
+                    </button>
+                </div>
+                <div class="input-group" id="git-input-group">
+                    <label for="git-url">Repository URL</label>
+                    <input
+                        type="url"
+                        id="git-url"
+                        placeholder="https://github.com/user/repo"
+                        autocomplete="off"
+                    >
+                    <span class="input-hint">HTTPS Git URL — the repo will be cloned on the server</span>
+                </div>
+                <div class="input-group hidden" id="local-input-group">
                     <label for="directory-path">Directory Path</label>
                     <input
                         type="text"
@@ -24,6 +42,7 @@
                         placeholder="Enter the absolute path to your Python codebase"
                         autocomplete="off"
                     >
+                    <span class="input-hint">Only works when running locally — the path must exist on the server</span>
                 </div>
                 <button id="verify-btn" onclick="startVerification()">
                     Verify Codebase
