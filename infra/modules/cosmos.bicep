@@ -13,7 +13,7 @@ param databaseName string
 @description('Name of the container to create.')
 param containerName string
 
-resource cosmosAccount 'Microsoft.DocumentDB/databaseAccounts@2024-05-15' = {
+resource cosmosAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' = {
   name: accountName
   location: location
   tags: tags
@@ -38,7 +38,7 @@ resource cosmosAccount 'Microsoft.DocumentDB/databaseAccounts@2024-05-15' = {
   }
 }
 
-resource database 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2024-05-15' = {
+resource database 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2023-04-15' = {
   parent: cosmosAccount
   name: databaseName
   properties: {
@@ -48,7 +48,7 @@ resource database 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2024-05-15
   }
 }
 
-resource container 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/sqlContainers@2024-05-15' = {
+resource container 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/sqlContainers@2023-04-15' = {
   parent: database
   name: containerName
   properties: {
